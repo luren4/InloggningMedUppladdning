@@ -55,25 +55,53 @@ if(isset($_SESSION["username"]))
   } else {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
       echo "The file " . basename($_FILES["fileToUpload"]["name"]) . " has been uploaded.";
-
-      $myfile = fopen("data.txt", "a+") or die("Unable to open file!");
-      $bilden = basename($_FILES["fileToUpload"]["name"]);
-      $txt = $_SESSION["username"];
-      $txt2 = "  har postat bilden:  ";
-      $txt3 = $bilden;
-      $txt4 = "\n";
-      fwrite($myfile, $txt);
-      fwrite($myfile, $txt2);
-      fwrite($myfile, $txt3);
-      fwrite($myfile, $txt4);
-      fclose($myfile);
       
+
+
+
+
+      $servername = "localhost";
+      $username = "root";
+      $password = "";
+      $dbname = "uploads";
+      $conn = new mysqli($servername, $username, $password, $dbname);
+      $sql = "SELECT * FROM uploads";
+      
+      $result = $conn->query($sql);
+
+
+
+
+      $filename = basename($_FILES["fileToUpload"]["name"]);
+
+      $username = $_SESSION["username"];
+
+
+      $sql = "INSERT INTO uploads (filename, user, uploadtime) VALUES ('$filename', '" . $username . " ', NOW())";
+      $result = $conn->query($sql);
+
+
+      if($_SESSION["username"] == "holros") {
+        $sql = "INSERT INTO uploads (filename, user, uploadtime, snuskig)
+        VALUES ('$filename', '" . $_SESSION["username"] . "', NOW(), TRUE)";
+        $conn->query($sql);
+      }
+            
+
+      session_destroy();
+
+
 
 
     } else {
       echo "Sorry, there was an error uploading your file.";
+
+
     }
   }
+}
+else {
+  echo "You are not logged in!";
 }
 
 ?>

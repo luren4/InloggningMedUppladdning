@@ -2,12 +2,11 @@
 $host="localhost";
 $user="root";
 $password="";
-$db="demo";
 
 
 
 
-mysqli_connect($host,$user,$password,$db);
+mysqli_connect($host,$user,$password);
 // mysql_select_db();
 
 if(isset($_POST['username']))
